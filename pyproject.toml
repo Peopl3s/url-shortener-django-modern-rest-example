@@ -17,6 +17,7 @@ dependencies = [
 dev = [
     "django-stubs[compatible-mypy]>=6.0.2",
     "pytest>=9.0.2",
+    "pytest-cov>=6.0.0",
     "pytest-django>=4.12.0",
     "ruff>=0.15.9",
     "schemathesis>=4.14.3",
@@ -154,6 +155,7 @@ pydocstyle.convention = "google"
 # pytest-django configuration:
 # https://pytest-django.readthedocs.io/en/latest/
 DJANGO_SETTINGS_MODULE = "config.settings"
+pythonpath = [".", "tests"]
 
 # Timeout for tests, so they can not take longer
 # than this amount of seconds.
