@@ -58,7 +58,7 @@ class RedirectController(Controller[PydanticSerializer]):
         description='Redirect from short to original URL',
         tags=['Redirects'],
     )
-    def get(self, parsed_path: Path[ShortLinkPath]) -> HttpResponse:
+    def get(self, parsed_path: Path[ShortLinkPath]) -> None:
         """Redirect to the original URL for the given short code."""
         usecase = get_follow_short_link_use_case()
         original_url = usecase(short_code=parsed_path.short_code)

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from django.utils.html import format_html
 
 from apps.urlshortener.infrastructure.models import ShortLinkModel
 
@@ -51,6 +52,15 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
             },
         ),
     )
+
+    @admin.display(description='Short code')
+    def short_code_link(self, obj: ShortLinkModel) -> str:
+        """Return short code as a clickable link."""
+        domain = getattr(settings, 'SHORTENER_DOMAIN', 'http://127.0.0.1:8000')
+        url = f'{domain.rstrip("/")}/{obj.short_code}'
+        return format_html(
+            '<a href="{}" target="_blank">{}</a>', url, obj.short_code,
+        )
 
     @admin.display(description='Original URL')
     def original_url_truncated(self, obj: ShortLinkModel) -> str:
