@@ -1,4 +1,5 @@
 import uuid
+from typing import override
 
 from django.db import models
 
@@ -29,6 +30,7 @@ class ShortLinkModel(models.Model):
             models.Index(fields=['-created_at']),
         )
 
+    @override
     def __str__(self) -> str:
         """Return short code as string representation."""
         return self.short_code

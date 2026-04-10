@@ -7,7 +7,7 @@ from apps.urlshortener.infrastructure.models import ShortLinkModel
 
 
 @admin.register(ShortLinkModel)
-class ShortLinkAdmin(admin.ModelAdmin):
+class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
     """Admin configuration for ShortLinkModel."""
 
     list_display = (
@@ -53,14 +53,14 @@ class ShortLinkAdmin(admin.ModelAdmin):
     )
 
     @admin.display(description='Original URL')
-    def original_url_truncated(self, obj: ShortLinkModel):
+    def original_url_truncated(self, obj: ShortLinkModel) -> str:
         """Return truncated original URL for display."""
         if len(obj.original_url) > 50:
             return obj.original_url[:47] + '...'
         return obj.original_url
 
     @admin.display(description='Full short URL')
-    def full_short_url(self, obj: ShortLinkModel):
+    def full_short_url(self, obj: ShortLinkModel) -> str:
         """Return full short URL as HTML anchor."""
         domain = getattr(
             settings,
@@ -75,7 +75,7 @@ class ShortLinkAdmin(admin.ModelAdmin):
         self,
         request: HttpRequest,
         queryset: QuerySet[ShortLinkModel],
-    ):
+    ) -> None:
         """Reset clicks counter for selected short links."""
         updated = queryset.update(clicks=0)
         self.message_user(

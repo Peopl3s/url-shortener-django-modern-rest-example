@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from typing import LiteralString, final
+from typing import LiteralString, final, override
 
 from apps.urlshortener.domain.constants import SHORT_CODE_LENGTH
 from apps.urlshortener.domain.intefaces import (
@@ -16,6 +16,7 @@ from apps.urlshortener.domain.models import ShortLinkEntity
 class Base64EncoderService(EncoderProtocol):
     """Encodes an integer into a base-N string using a given alphabet."""
 
+    @override
     def __call__(self, *, alphabet: str, number: int) -> str:
         """Encode the given number using the provided alphabet."""
         if number == 0:
@@ -38,6 +39,7 @@ class ShortLinkGeneratorService(LinkGeneratorProtocol):
     alphabet: LiteralString
     encoder: EncoderProtocol
 
+    @override
     def __call__(self, *, length: int) -> str:
         """Generate a short code of the specified length."""
         code = self.encoder(alphabet=self.alphabet, number=uuid.uuid4().int)
@@ -71,5 +73,7 @@ class FollowShortLinkUseCase:
     def __call__(self, *, short_code: str) -> str:
         """Resolve a short code to its original URL and record the click."""
         short_link_entity = self.repository.get_by_code(short_code=short_code)
+        if short_link_entity is None:
+            raise ValueError(f'Short link not found: {short_code}')
         self.repository.increment_clicks(short_code=short_code)
         return short_link_entity.original_url

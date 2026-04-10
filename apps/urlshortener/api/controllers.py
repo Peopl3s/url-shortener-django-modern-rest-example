@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import final, override
+from typing import Never, final, override
 
 from django.http import HttpResponse
 from dmr import APIRedirectError, Body, Controller, HeaderSpec, Path, modify
@@ -43,7 +43,7 @@ class RedirectController(Controller[PydanticSerializer]):
 
     description = 'Redirect Controller'
 
-    @modify(
+    @modify(  # type: ignore[deprecated]
         extra_responses=[
             ResponseSpec(
                 Controller.error_model,
@@ -58,7 +58,7 @@ class RedirectController(Controller[PydanticSerializer]):
         description='Redirect from short to original URL',
         tags=['Redirects'],
     )
-    def get(self, path: Path[ShortLinkPath]) -> HttpResponse:
+    def get(self, path: Path[ShortLinkPath]) -> Never:
         """Redirect to the original URL for the given short code."""
         usecase = get_follow_short_link_use_case()
         original_url = usecase(short_code=path.short_code)
