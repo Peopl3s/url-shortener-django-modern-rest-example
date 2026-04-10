@@ -18,6 +18,8 @@ following the architectural conventions of
 The service accepts a long URL and returns a short code. Visiting the short code
 redirects to the original URL and increments the click counter.
 
+Special thanks to [@sobolevn](https://github.com/sobolevn) and [@kondratevdev](https://github.com/kondratevdev)
+
 ---
 
 ## Stack
