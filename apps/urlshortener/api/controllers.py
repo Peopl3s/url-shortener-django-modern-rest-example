@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Never, final, override
+from typing import final, override
 
 from django.http import HttpResponse
 from dmr import APIRedirectError, Body, Controller, HeaderSpec, Path, modify
@@ -29,11 +29,11 @@ class ShortLinkController(Controller[PydanticSerializer]):
 
     def post(
         self,
-        body: Body[ShortLinkCreateSchema],
+        parsed_body: Body[ShortLinkCreateSchema],
     ) -> ShortLinkResponseSchema:
         """Create a new short link from the given original URL."""
         usecase = get_create_short_link_use_case()
-        short_link_entity = usecase(original_url=body.original_url)
+        short_link_entity = usecase(original_url=parsed_body.original_url)
         return ShortLinkDtoMapper()(short_link=short_link_entity)
 
 
@@ -58,10 +58,10 @@ class RedirectController(Controller[PydanticSerializer]):
         description='Redirect from short to original URL',
         tags=['Redirects'],
     )
-    def get(self, path: Path[ShortLinkPath]) -> Never:
+    def get(self, parsed_path: Path[ShortLinkPath]) -> HttpResponse:
         """Redirect to the original URL for the given short code."""
         usecase = get_follow_short_link_use_case()
-        original_url = usecase(short_code=path.short_code)
+        original_url = usecase(short_code=parsed_path.short_code)
         raise APIRedirectError(
             redirect_to=original_url,
             status_code=HTTPStatus.FOUND,
