@@ -13,6 +13,7 @@ class ShortLinkCreateSchema(pydantic.BaseModel):
         json_schema_extra={
             'minLength': 1,
             'maxLength': MAX_ORIGINAL_URL_LENGTH,
+            'pattern': '^https?://',
             'example': 'https://github.com/wemake-services/wemake-django-template',
         },
     )

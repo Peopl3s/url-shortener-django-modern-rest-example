@@ -81,7 +81,7 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
             'http://127.0.0.1:8000',
         )
         url = f'{domain.rstrip("/")}/api/shortener/{obj.short_code}/'
-        return f'<a href="{url}" target="_blank">{url}</a>'
+        return format_html('<a href="{url}" target="_blank">{url}</a>', url=url)
 
     @admin.action(description='Reset URL clicks', permissions=['change'])
     def reset_clicks_count(

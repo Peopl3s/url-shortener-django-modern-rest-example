@@ -28,3 +28,8 @@ class ShortLinkEntity:
                 f'{MAX_ORIGINAL_URL_LENGTH} characters '
                 f'(got {len(self.original_url)})',
             )
+
+        if not self.original_url.startswith(('http://', 'https://')):
+            raise ValueError(
+                'original_url must start with http:// or https://',
+            )
