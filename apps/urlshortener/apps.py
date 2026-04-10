@@ -5,4 +5,4 @@ class UrlShortenerConfig(AppConfig):
     """Django app configuration for the test_urlshortener app."""
 
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.test_urlshortener'
+    name = 'apps.urlshortener'
