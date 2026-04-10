@@ -12,12 +12,13 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
     """Admin configuration for ShortLinkModel."""
 
     list_display = (
+        'id',
         'short_code_link',
         'original_url_truncated',
         'clicks',
         'created_at',
     )
-    list_display_links = ('short_code_link',)
+    list_display_links = ('id',)
 
     list_filter = ('created_at',)
     search_fields = ('short_code', 'original_url')
@@ -57,7 +58,7 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
     def short_code_link(self, obj: ShortLinkModel) -> str:
         """Return short code as a clickable link."""
         domain = getattr(settings, 'SHORTENER_DOMAIN', 'http://127.0.0.1:8000')
-        url = f'{domain.rstrip("/")}/{obj.short_code}'
+        url = f'{domain.rstrip("/")}/api/shortener/{obj.short_code}/'
         return format_html(
             '<a href="{}" target="_blank">{}</a>', url, obj.short_code,
         )
@@ -77,7 +78,7 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
             'SHORTENER_DOMAIN',
             'http://127.0.0.1:8000',
         )
-        url = f'{domain.rstrip("/")}/{obj.short_code}'
+        url = f'{domain.rstrip("/")}/api/shortener/{obj.short_code}/'
         return f'<a href="{url}" target="_blank">{url}</a>'
 
     @admin.action(description='Reset URL clicks', permissions=['change'])
