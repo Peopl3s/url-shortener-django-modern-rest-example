@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dmr',
-    'apps.urlshortener.apps.UrlShortenerConfig',
+    'apps.test_urlshortener.apps.UrlShortenerConfig',
 ]
 
 MIDDLEWARE = [
