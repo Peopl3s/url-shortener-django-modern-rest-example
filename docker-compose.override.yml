@@ -1,7 +1,7 @@
 # Development overrides — applied automatically by `docker compose up`.
 #
 # This file is intentionally tracked in git.
-# Keep real secrets out of it; use a local .env for anything sensitive.
+# Keep real secrets out of it; use a local .env.example for anything sensitive.
 
 services:
   web:

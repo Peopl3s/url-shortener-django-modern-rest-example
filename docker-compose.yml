@@ -1,6 +1,6 @@
 # Production Compose file.
 #
-# Required environment variable (set in shell or .env file):
+# Required environment variable (set in shell or .env.example file):
 #   DJANGO_SECRET_KEY  — cryptographically strong secret, e.g.:
 #                        python -c "import secrets; print(secrets.token_urlsafe(50))"
 #
@@ -29,7 +29,7 @@ services:
       - db_data:/data          # persist the SQLite database across restarts
     environment:
       # :? syntax aborts docker compose if the variable is unset or empty
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in .env or the environment}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in .env.example or the environment}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
       DJANGO_DEBUG: "false"
       DJANGO_DB_PATH: /data/db.sqlite3

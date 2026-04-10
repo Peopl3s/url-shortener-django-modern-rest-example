@@ -1,116 +1,192 @@
-https://habr.com/ru/articles/883578/
+# URL Shortener — django-modern-rest example
 
-https://django-modern-rest.readthedocs.io/en/latest/
+REST API example built with Django and
+[**django-modern-rest**](https://django-modern-rest.readthedocs.io/en/latest/),
+following the architectural conventions of
+[**wemake-django-template**](https://github.com/wemake-services/wemake-django-template).
 
-`mkdir dmr-example && cd dmr-example`
+The service accepts a long URL and returns a short code. Visiting the short code
+redirects to the original URL and increments the click counter.
 
-`pyenv --version`
+---
 
-`pyenv install -l`
+## Stack
 
-`pyenv install 3.13.5`
+| Layer | Tools |
+|---|---|
+| Language | Python 3.13 |
+| Framework | Django 6 + [django-modern-rest](https://django-modern-rest.readthedocs.io/en/latest/) |
+| Schemas / validation | Pydantic v2 |
+| Database | SQLite (via Django ORM) |
+| Server | Gunicorn (prod) / runserver (dev) |
+| Package manager | [uv](https://docs.astral.sh/uv/) |
+| Linter / formatter | [ruff](https://docs.astral.sh/ruff/) |
+| Type checking | mypy (strict) + django-stubs |
+| Tests | pytest + pytest-django + schemathesis |
+| Containerisation | Docker + Docker Compose (dev / prod) |
 
-`pip install uv`
+---
 
-`uv init`
-
-`pyenv local 3.13.5`
-
-`uv venv`
-
-`source .venv/bin/activate`
-
-![img.png](img.png)
-
-`uv add django`
-
-`uv add django-modern-rest`
-
-`uv add django-stubs-ext`
-
-`uv add --dev 'django-stubs[compatible-mypy]'`
-
-`uv add --dev ruff pytest pytest-django schemathesis pydantic`
-
-`uv add --group docs sphinx`
-
-`uv add structlog gunicorn`
-
-`django-admin startproject config .`
-
-Добавляем в pyproject.toml:
-```
-[tool.mypy]
-plugins = ["config.main"]
-
-[tool.django-stubs]
-django_settings_module = "config.settings"
-```
+## Project structure
 
 ```
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'dmr',
-]
-```
-
-
-```
-dmr-example/
+dmr-urlshortener-example/
 │
 ├── manage.py
-├── pyproject.toml
+├── pyproject.toml          # dependencies, mypy, ruff, pytest config
+├── Makefile                # all commands in one place
+├── Dockerfile
+├── docker-compose.yml          # production
+├── docker-compose.override.yml # dev (applied automatically)
 │
-├── config/                  # Django конфиг
-│   ├── __init__.py
+├── config/                 # Django configuration
 │   ├── settings.py
 │   ├── urls.py
-│   └── asgi.py / wsgi.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
-├── apps/                    # Все приложения
-│   └── users/
-│       ├── __init__.py
+├── apps/
+│   └── urlshortener/
 │       │
-│       ├── api/             # HTTP слой (dmr)
-│       │   ├── controllers.py
-│       │   ├── schemas.py
-│       │   └── router.py
+│       ├── api/            # HTTP layer (dmr)
+│       │   ├── controllers.py  # Controller classes (POST /links, GET /{code})
+│       │   ├── schemas.py      # Pydantic request / response schemas
+│       │   ├── mappers.py      # Entity → Response DTO
+│       │   └── routers.py      # route registration
 │       │
-│       ├── domain/          # Бизнес-логика
-│       │   ├── models.py
-│       │   └── services.py
+│       ├── domain/         # business logic (no Django dependencies)
+│       │   ├── models.py       # ShortLinkEntity (dataclass)
+│       │   ├── services.py     # use cases + short-code generation services
+│       │   ├── interfaces.py   # Protocol interfaces
+│       │   └── constants.py
 │       │
-│       ├── infrastructure/  # Работа с БД, внешними сервисами
-│       │   ├── repositories.py
-│       │   └── mappers.py
+│       ├── infrastructure/ # database layer
+│       │   ├── models.py       # Django ORM models
+│       │   ├── repositories.py # repository implementation
+│       │   └── mappers.py      # ORM model ↔ Entity
 │       │
+│       ├── migrations/     # standard Django migrations
+│       ├── factories.py    # dependency factories (DI)
+│       ├── admin.py
 │       └── apps.py
-├── tests/
-│   ├── conftest.py       # общий для всех приложений
-│   ├── utils.py          # общие тестовые утилиты
-│   └── users/
-│       └── test_api.py
-└── common/                  # Общие утилиты
-    └── di.py
+│
+├── common/                 # shared utilities across apps
+│
+└── tests/
+    ├── conftest.py
+    ├── plugins/
+    │   └── django_settings.py
+    └── test_apps/
+        └── test_urlshortener/
+            ├── test_api.py     # HTTP integration tests
+            ├── test_domain.py  # business logic unit tests
+            ├── test_models.py
+            └── test_schema.py
 ```
 
-Проблема в том, что PyCharm не видит виртуальное окружение .venv, созданное через uv. Нужно указать его вручную.                                                                                               
-                                                                                                                                                                                                                 
-  Как исправить                                                                                                                                                                                                  
-                                                                                                                                                                                                                 
-  Settings → Project → Python Interpreter → Add Interpreter → Add Local Interpreter                                                                                                                              
-                                                                                                                                                                                                                 
-  Выбери Existing и укажи путь к интерпретатору:                                                                                                                                                                 
-  /Users/maximmelnikov/Desktop/drm-example/.venv/bin/python                                                                                                                                                      
-                                                                                                                                                                                                                 
-  Пошагово:                                                                                                                                                                                                      
-                                                                                                                                                                                                                 
-  1. PyCharm → Settings (⌘,) → Project: drm-example → Python Interpreter                                                                                                                                         
-  2. Нажми шестерёнку → Add Interpreter → Add Local Interpreter
-  3. Выбери Existing → путь: .venv/bin/python3.13 в корне проекта                                                                                                                                                    
-  4. OK  
+### Architecture layers
+
+```
+HTTP request
+    │
+    ▼
+┌─────────────────────────────────┐
+│  api/  (controllers, schemas)   │  ← HTTP only: parsing, serialisation
+└─────────────────┬───────────────┘
+                  │ calls use case
+                  ▼
+┌─────────────────────────────────┐
+│  domain/  (services, models)    │  ← business rules, no Django imports
+└─────────────────┬───────────────┘
+                  │ via Protocol interface
+                  ▼
+┌─────────────────────────────────┐
+│  infrastructure/ (repositories) │  ← ORM, SQL, external services
+└─────────────────────────────────┘
+```
+
+---
+
+## Quick start
+
+### Local (without Docker)
+
+**Requirements:** Python 3.13, [uv](https://docs.astral.sh/uv/)
+
+```bash
+# 1. Clone and enter the directory
+git clone <repo-url> && cd dmr-urlshortener-example
+
+# 2. Install dependencies
+make install-dev
+
+# 3. Apply migrations
+make migrate
+
+# 4. Run the development server
+make run
+```
+
+The service is available at [http://localhost:8000](http://localhost:8000).
+OpenAPI schema — [http://localhost:8000/docs/openapi.json/](http://localhost:8000/docs/openapi.json/).
+
+---
+
+### Docker (recommended)
+
+**Requirements:** Docker, Docker Compose
+
+```bash
+# Development mode (hot-reload, dev dependencies inside the container)
+make run-docker
+
+# Production mode (gunicorn, no dev dependencies)
+DJANGO_SECRET_KEY=<secret> make run-prod
+```
+
+> Both modes run `migrate` automatically on startup.
+
+---
+
+### Example requests
+
+```bash
+# Create a short link
+curl -X POST http://localhost:8000/links/ \
+  -H "Content-Type: application/json" \
+  -d '{"original_url": "https://example.com/very/long/path"}'
+
+# Response:
+# {"short_code": "aB3xZ9", "original_url": "https://example.com/very/long/path", "clicks": 0}
+
+# Follow a short link (returns 302 → original_url)
+curl -L http://localhost:8000/aB3xZ9/
+```
+
+---
+
+## Development commands
+
+```bash
+make help           # list all available commands
+
+make test           # run full test suite with coverage
+make test-fast      # run tests without coverage (faster feedback)
+make lint           # ruff check without auto-fix
+make format         # auto-format with ruff
+make typecheck      # strict mypy check
+make check          # lint + typecheck + test in one command
+
+make migrate        # apply migrations locally
+make makemigrations # create new migrations
+make shell          # open Django shell
+```
+
+---
+
+## Links
+
+- [django-modern-rest — documentation](https://django-modern-rest.readthedocs.io/en/latest/)
+- [wemake-django-template — GitHub](https://github.com/wemake-services/wemake-django-template)
+- [uv — documentation](https://docs.astral.sh/uv/)
+- [ruff — documentation](https://docs.astral.sh/ruff/)
