@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.contrib import admin
 from django.db.models import QuerySet
@@ -23,7 +22,10 @@ class ShortLinkAdmin(admin.ModelAdmin):
     search_fields = ('short_code', 'original_url')
 
     readonly_fields = (
-        'uid', 'clicks', 'created_at', 'full_short_url',
+        'uid',
+        'clicks',
+        'created_at',
+        'full_short_url',
     )
 
     fieldsets = (
@@ -61,17 +63,22 @@ class ShortLinkAdmin(admin.ModelAdmin):
     def full_short_url(self, obj: ShortLinkModel):
         """Return full short URL as HTML anchor."""
         domain = getattr(
-            settings, 'SHORTENER_DOMAIN', 'http://127.0.0.1:8000',
+            settings,
+            'SHORTENER_DOMAIN',
+            'http://127.0.0.1:8000',
         )
         url = f'{domain.rstrip("/")}/{obj.short_code}'
         return f'<a href="{url}" target="_blank">{url}</a>'
 
     @admin.action(description='Reset URL clicks', permissions=['change'])
     def reset_clicks_count(
-        self, request: HttpRequest, queryset: QuerySet[ShortLinkModel],
+        self,
+        request: HttpRequest,
+        queryset: QuerySet[ShortLinkModel],
     ):
         """Reset clicks counter for selected short links."""
         updated = queryset.update(clicks=0)
         self.message_user(
-            request, f'Clicks counter has been reset - {updated}.',
+            request,
+            f'Clicks counter has been reset - {updated}.',
         )

@@ -17,7 +17,8 @@ class ShortLinkDjangoRepository(ShortLinkRepositoryProtocol):
     def create(self, *, original_url: str, short_code: str) -> ShortLinkEntity:
         """Create and persist a new short link."""
         obj = ShortLinkModel.objects.create(
-            original_url=original_url, short_code=short_code,
+            original_url=original_url,
+            short_code=short_code,
         )
         return ShortLinkMapper()(obj_model=obj)
 

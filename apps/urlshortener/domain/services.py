@@ -56,7 +56,8 @@ class CreateShortLinkUseCase:
         """Create and persist a short link for the given URL."""
         code = self.generator(length=SHORT_CODE_LENGTH)
         return self.repository.create(
-            original_url=original_url, short_code=code,
+            original_url=original_url,
+            short_code=code,
         )
 
 

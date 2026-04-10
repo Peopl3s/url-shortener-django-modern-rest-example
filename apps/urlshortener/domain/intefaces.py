@@ -18,7 +18,10 @@ class ShortLinkRepositoryProtocol(Protocol):
 
     @abstractmethod
     def create(
-        self, *, original_url: str, short_code: str,
+        self,
+        *,
+        original_url: str,
+        short_code: str,
     ) -> ShortLinkEntity:
         """Create and persist a new short link."""
         ...

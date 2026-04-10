@@ -16,7 +16,8 @@ def get_base64_ascii_shortlink_generator() -> ShortLinkGeneratorService:
     """Build a ShortLinkGeneratorService with ASCII alphabet."""
     alphabet: LiteralString = string.ascii_letters + string.digits
     return ShortLinkGeneratorService(
-        alphabet=alphabet, encoder=Base64EncoderService(),
+        alphabet=alphabet,
+        encoder=Base64EncoderService(),
     )
 
 

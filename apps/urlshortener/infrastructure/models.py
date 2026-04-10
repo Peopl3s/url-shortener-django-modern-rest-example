@@ -10,11 +10,13 @@ class ShortLinkModel(models.Model):
 
     uid = models.UUIDField(verbose_name='UUID', default=uuid.uuid4, unique=True)
     original_url = models.URLField(
-        verbose_name='original URL', max_length=MAX_ORIGINAL_URL_LENGTH,
+        verbose_name='original URL',
+        max_length=MAX_ORIGINAL_URL_LENGTH,
     )
     short_code = models.CharField(verbose_name='short url code', unique=True)
     created_at = models.DateTimeField(
-        verbose_name='created date', auto_now_add=True,
+        verbose_name='created date',
+        auto_now_add=True,
     )
     clicks = models.PositiveIntegerField(verbose_name='clicks count', default=0)
 

@@ -11,7 +11,9 @@ class ShortLinkDtoMapper:
     """Maps ShortLinkEntity to ShortLinkResponseSchema."""
 
     def __call__(
-        self, *, short_link: ShortLinkEntity,
+        self,
+        *,
+        short_link: ShortLinkEntity,
     ) -> ShortLinkResponseSchema:
         """Convert a domain entity to an API response schema."""
         return ShortLinkResponseSchema(

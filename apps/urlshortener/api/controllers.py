@@ -28,7 +28,8 @@ class ShortLinkController(Controller[PydanticSerializer]):
     description = 'Short Link Controller'
 
     def post(
-        self, body: Body[ShortLinkCreateSchema],
+        self,
+        body: Body[ShortLinkCreateSchema],
     ) -> ShortLinkResponseSchema:
         """Create a new short link from the given original URL."""
         usecase = get_create_short_link_use_case()
