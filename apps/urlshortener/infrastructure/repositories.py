@@ -3,7 +3,7 @@ from typing import final, override
 
 from django.db.models import F
 
-from apps.urlshortener.domain.intefaces import ShortLinkRepositoryProtocol
+from apps.urlshortener.domain.interfaces import ShortLinkRepositoryProtocol
 from apps.urlshortener.domain.models import ShortLinkEntity
 from apps.urlshortener.infrastructure.mappers import ShortLinkMapper
 from apps.urlshortener.infrastructure.models import ShortLinkModel
@@ -25,8 +25,11 @@ class ShortLinkDjangoRepository(ShortLinkRepositoryProtocol):
 
     @override
     def get_by_code(self, *, short_code: str) -> ShortLinkEntity | None:
-        """Retrieve a short link entity by its short code."""
-        obj = ShortLinkModel.objects.get(short_code=short_code)
+        """Retrieve a short link entity by its short code, or None if absent."""
+        try:
+            obj = ShortLinkModel.objects.get(short_code=short_code)
+        except ShortLinkModel.DoesNotExist:
+            return None
         return ShortLinkMapper()(obj_model=obj)
 
     @override

@@ -38,7 +38,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in {'true', '1', 'yes'}
 
 ALLOWED_HOSTS: list[str] = [
     host.strip()
-    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+    for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]'
+    ).split(',')
     if host.strip()
 ]
 
@@ -85,6 +87,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -127,12 +131,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DMR_SETTINGS = {
     Settings.openapi_config: OpenAPIConfig(
         title='URL Shortener',
         version='13.22.3',
-        openapi_version='3.2.0',
+        openapi_version='3.1.0',
         servers=[Server(url='/api')],
     ),
 }

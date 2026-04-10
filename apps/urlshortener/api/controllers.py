@@ -14,11 +14,11 @@ from apps.urlshortener.api.schemas import (
     ShortLinkPath,
     ShortLinkResponseSchema,
 )
+from apps.urlshortener.domain.exceptions import ShortLinkNotFoundError
 from apps.urlshortener.factories import (
     get_create_short_link_use_case,
     get_follow_short_link_use_case,
 )
-from apps.urlshortener.infrastructure.models import ShortLinkModel
 
 
 @final
@@ -103,7 +103,7 @@ class RedirectController(Controller[PydanticSerializer]):
         controller: Controller[PydanticSerializer],
         exc: Exception,
     ) -> HttpResponse:
-        if isinstance(exc, ShortLinkModel.DoesNotExist):
+        if isinstance(exc, ShortLinkNotFoundError):
             return self.to_error(
                 self.format_error(
                     'Link not found',
