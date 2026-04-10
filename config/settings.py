@@ -15,6 +15,7 @@ from pathlib import Path
 
 import django_stubs_ext
 from dmr.openapi.config import OpenAPIConfig
+from dmr.openapi.objects import Server
 from dmr.settings import Settings
 
 django_stubs_ext.monkeypatch()
@@ -132,5 +133,6 @@ DMR_SETTINGS = {
         title='URL Shortener',
         version='13.22.3',
         openapi_version='3.2.0',
+        servers=[Server(url='/api')],
     ),
 }
