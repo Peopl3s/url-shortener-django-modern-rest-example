@@ -1,6 +1,8 @@
 import string
 from typing import LiteralString
 
+from django.db import transaction
+
 from apps.urlshortener.domain.services import (
     Base64EncoderService,
     CreateShortLinkUseCase,
@@ -34,4 +36,7 @@ def get_create_short_link_use_case() -> CreateShortLinkUseCase:
 
 def get_follow_short_link_use_case() -> FollowShortLinkUseCase:
     """Build the FollowShortLinkUseCase with default dependencies."""
-    return FollowShortLinkUseCase(repository=ShortLinkDjangoRepository())
+    return FollowShortLinkUseCase(
+        repository=ShortLinkDjangoRepository(),
+        transaction=transaction.atomic,
+    )

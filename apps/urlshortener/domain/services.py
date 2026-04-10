@@ -8,6 +8,7 @@ from apps.urlshortener.domain.interfaces import (
     EncoderProtocol,
     LinkGeneratorProtocol,
     ShortLinkRepositoryProtocol,
+    TransactionProtocol,
 )
 from apps.urlshortener.domain.models import ShortLinkEntity
 
@@ -70,11 +71,15 @@ class FollowShortLinkUseCase:
     """Use case for following a short link to its original URL."""
 
     repository: ShortLinkRepositoryProtocol
+    transaction: TransactionProtocol
 
     def __call__(self, *, short_code: str) -> str:
         """Resolve a short code to its original URL and record the click."""
-        short_link_entity = self.repository.get_by_code(short_code=short_code)
-        if short_link_entity is None:
-            raise ShortLinkNotFoundError(short_code)
-        self.repository.increment_clicks(short_code=short_code)
-        return short_link_entity.original_url
+        with self.transaction():
+            short_link_entity = self.repository.get_by_code(
+                short_code=short_code,
+            )
+            if short_link_entity is None:
+                raise ShortLinkNotFoundError(short_code)
+            self.repository.increment_clicks(short_code=short_code)
+            return short_link_entity.original_url

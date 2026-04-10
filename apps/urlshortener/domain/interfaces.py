@@ -1,7 +1,17 @@
 from abc import abstractmethod
+from contextlib import AbstractContextManager
 from typing import Protocol
 
 from apps.urlshortener.domain.models import ShortLinkEntity
+
+
+class TransactionProtocol(Protocol):
+    """Protocol for a callable that returns an atomic transaction ctx."""
+
+    @abstractmethod
+    def __call__(self) -> AbstractContextManager[None]:
+        """Return a context manager that wraps code in an atomic transaction."""
+        ...
 
 
 class EncoderProtocol(Protocol):
