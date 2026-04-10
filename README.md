@@ -1,5 +1,15 @@
 # URL Shortener — django-modern-rest example
 
+[![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-6.0-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![django-modern-rest](https://img.shields.io/badge/django--modern--rest-0.5.0-blueviolet)](https://django-modern-rest.readthedocs.io/en/latest/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![uv](https://img.shields.io/badge/uv-package%20manager-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/)
+[![mypy](https://img.shields.io/badge/mypy-strict-2A6DB2?logo=python&logoColor=white)](https://mypy.readthedocs.io/)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://pytest-cov.readthedocs.io/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 REST API example built with Django and
 [**django-modern-rest**](https://django-modern-rest.readthedocs.io/en/latest/),
 following the architectural conventions of
