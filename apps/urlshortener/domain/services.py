@@ -25,7 +25,7 @@ class Base64EncoderService(EncoderProtocol):
         base = len(alphabet)
         result = []
         while number > 0:
-            _, rem = divmod(number, base)
+            number, rem = divmod(number, base)
             result.append(alphabet[rem])
 
         return ''.join(reversed(result))
