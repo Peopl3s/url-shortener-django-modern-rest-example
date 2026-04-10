@@ -71,6 +71,17 @@ def test_redirect_short_link_increments_clicks(
 
 
 @pytest.mark.django_db
+def test_create_short_link_with_empty_url(dmr_client: DMRClient) -> None:
+    """Ensures that an empty original_url returns 400."""
+    response = dmr_client.post(
+        reverse('shortener:create_link'),
+        data={'original_url': ''},
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+@pytest.mark.django_db
 def test_redirect_short_link_not_found(dmr_client: DMRClient) -> None:
     """Ensures that a missing short link returns 404."""
     response = dmr_client.get(

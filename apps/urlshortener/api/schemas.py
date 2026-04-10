@@ -2,6 +2,8 @@ from typing import final
 
 import pydantic
 
+from apps.urlshortener.domain.constants import MAX_ORIGINAL_URL_LENGTH
+
 
 @final
 class ShortLinkCreateSchema(pydantic.BaseModel):
@@ -9,6 +11,8 @@ class ShortLinkCreateSchema(pydantic.BaseModel):
 
     original_url: str = pydantic.Field(
         json_schema_extra={
+            'minLength': 1,
+            'maxLength': MAX_ORIGINAL_URL_LENGTH,
             'example': 'https://github.com/wemake-services/wemake-django-template',
         },
     )

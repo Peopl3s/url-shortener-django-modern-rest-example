@@ -27,6 +27,14 @@ class ShortLinkController(Controller[PydanticSerializer]):
 
     description = 'Short Link Controller'
 
+    @modify(
+        extra_responses=[
+            ResponseSpec(
+                Controller.error_model,
+                status_code=HTTPStatus.BAD_REQUEST,
+            ),
+        ],
+    )
     def post(
         self,
         parsed_body: Body[ShortLinkCreateSchema],
@@ -35,6 +43,27 @@ class ShortLinkController(Controller[PydanticSerializer]):
         usecase = get_create_short_link_use_case()
         short_link_entity = usecase(original_url=parsed_body.original_url)
         return ShortLinkDtoMapper()(short_link=short_link_entity)
+
+    @override
+    def handle_error(
+        self,
+        endpoint: Endpoint,
+        controller: Controller[PydanticSerializer],
+        exc: Exception,
+    ) -> HttpResponse:
+        if isinstance(exc, ValueError):
+            return self.to_error(
+                self.format_error(
+                    str(exc),
+                    error_type=ErrorType.value_error,
+                ),
+                status_code=HTTPStatus.BAD_REQUEST,
+            )
+        return super().handle_error(  # pragma: no cover
+            endpoint,
+            controller,
+            exc,
+        )
 
 
 @final
