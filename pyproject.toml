@@ -52,7 +52,11 @@ warn_unreachable = true
 # plugins = ["config.main"]
 
 [[tool.mypy.overrides]]
-module = "server.apps.*.migrations.*" # TODO: CHANGE
+module = "apps.*.migrations.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "apps.*.infrastructure.migrations.*"
 ignore_errors = true
 
 [tool.django-stubs]
@@ -138,10 +142,9 @@ flake8-quotes.inline-quotes = "single"
 mccabe.max-complexity = 6
 pydocstyle.convention = "google"
 
-[tool.ruff.lint.per-file-ignores] # TODO: CHANGE
-"server/apps/*/migrations/*.py" = ["D101", "E501", "RUF012"]
-"server/common/typing/*.py" = ["F401"]
-"server/implemented.py" = ["PLC0415", "D103"]
+[tool.ruff.lint.per-file-ignores]
+"apps/*/migrations/*.py" = ["D101", "E501", "RUF012"]
+"apps/*/infrastructure/migrations/*.py" = ["D101", "E501", "RUF012"]
 "tests/*.py" = ["S101"]
 
 [tool.pytest.ini_options]
@@ -186,7 +189,7 @@ addopts = [
   # Output:
   "--tb=short",
   # Coverage:
-  "--cov=server",
+  "--cov=apps",
   "--cov=tests",
   "--cov-branch",
   "--cov-report=term-missing:skip-covered",
