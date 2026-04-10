@@ -6,7 +6,7 @@ router = Router(
     'shortener/',
     [
         path(
-            '/',
+            '',
             controllers.ShortLinkController.as_view(),
             name='create_link',
         ),

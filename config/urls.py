@@ -10,7 +10,7 @@ schema = build_schema(urlshortener_router)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(
-        'api/',
+        'api/shortener/',
         include((urlshortener_router.urls, 'shortener'), namespace='shortener'),
     ),
     path('docs/openapi.json/', OpenAPIJsonView.as_view(schema)),
