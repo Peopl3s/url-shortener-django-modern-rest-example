@@ -13,6 +13,6 @@ urlpatterns = [
         'api/shortener/',
         include((urlshortener_router.urls, 'shortener'), namespace='shortener'),
     ),
-    path('docs/openapi.json/', OpenAPIJsonView.as_view(schema)),
+    path('docs/openapi.json/', OpenAPIJsonView.as_view(schema), name='openapi'),
     path('docs/swagger/', SwaggerView.as_view(schema)),
 ]

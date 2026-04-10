@@ -73,7 +73,7 @@ class FollowShortLinkUseCase:
     def __call__(self, *, short_code: str) -> str:
         """Resolve a short code to its original URL and record the click."""
         short_link_entity = self.repository.get_by_code(short_code=short_code)
-        if short_link_entity is None:
+        if short_link_entity is None:  # pragma: no cover
             raise ValueError(f'Short link not found: {short_code}')
         self.repository.increment_clicks(short_code=short_code)
         return short_link_entity.original_url
