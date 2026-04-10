@@ -26,31 +26,37 @@ class Migration(migrations.Migration):
                 (
                     'uid',
                     models.UUIDField(
-                        default=uuid.uuid4, unique=True, verbose_name='UUID',
+                        default=uuid.uuid4,
+                        unique=True,
+                        verbose_name='UUID',
                     ),
                 ),
                 (
                     'original_url',
                     models.URLField(
-                        max_length=500, verbose_name='original URL',
+                        max_length=500,
+                        verbose_name='original URL',
                     ),
                 ),
                 (
                     'short_code',
                     models.CharField(
-                        unique=True, verbose_name='short url code',
+                        unique=True,
+                        verbose_name='short url code',
                     ),
                 ),
                 (
                     'created_at',
                     models.DateTimeField(
-                        auto_now_add=True, verbose_name='created date',
+                        auto_now_add=True,
+                        verbose_name='created date',
                     ),
                 ),
                 (
                     'clicks',
                     models.PositiveIntegerField(
-                        default=0, verbose_name='clicks count',
+                        default=0,
+                        verbose_name='clicks count',
                     ),
                 ),
             ],
