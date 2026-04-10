@@ -13,6 +13,7 @@ from apps.urlshortener.infrastructure.repositories import (
 
 
 def get_base64_ascii_shortlink_generator() -> ShortLinkGeneratorService:
+    """Build a ShortLinkGeneratorService with ASCII alphabet."""
     alphabet: LiteralString = string.ascii_letters + string.digits
     return ShortLinkGeneratorService(
         alphabet=alphabet, encoder=Base64EncoderService(),
@@ -20,6 +21,7 @@ def get_base64_ascii_shortlink_generator() -> ShortLinkGeneratorService:
 
 
 def get_create_short_link_use_case() -> CreateShortLinkUseCase:
+    """Build the CreateShortLinkUseCase with default dependencies."""
     return CreateShortLinkUseCase(
         repository=ShortLinkDjangoRepository(),
         generator=get_base64_ascii_shortlink_generator(),
@@ -27,4 +29,5 @@ def get_create_short_link_use_case() -> CreateShortLinkUseCase:
 
 
 def get_follow_short_link_use_case() -> FollowShortLinkUseCase:
+    """Build the FollowShortLinkUseCase with default dependencies."""
     return FollowShortLinkUseCase(repository=ShortLinkDjangoRepository())

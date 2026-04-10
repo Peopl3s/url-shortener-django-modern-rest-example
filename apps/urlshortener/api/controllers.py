@@ -23,11 +23,14 @@ from apps.urlshortener.infrastructure.models import ShortLinkModel
 
 @final
 class ShortLinkController(Controller[PydanticSerializer]):
+    """Controller for creating short links."""
+
     description = 'Short Link Controller'
 
     def post(
         self, body: Body[ShortLinkCreateSchema],
     ) -> ShortLinkResponseSchema:
+        """Create a new short link from the given original URL."""
         usecase = get_create_short_link_use_case()
         short_link_entity = usecase(original_url=body.original_url)
         return ShortLinkDtoMapper()(short_link=short_link_entity)
@@ -35,6 +38,8 @@ class ShortLinkController(Controller[PydanticSerializer]):
 
 @final
 class RedirectController(Controller[PydanticSerializer]):
+    """Controller for redirecting short links to original URLs."""
+
     description = 'Redirect Controller'
 
     @modify(
@@ -53,6 +58,7 @@ class RedirectController(Controller[PydanticSerializer]):
         tags=['Redirects'],
     )
     def get(self, path: Path[ShortLinkPath]) -> HttpResponse:
+        """Redirect to the original URL for the given short code."""
         usecase = get_follow_short_link_use_case()
         original_url = usecase(short_code=path.short_code)
         raise APIRedirectError(
