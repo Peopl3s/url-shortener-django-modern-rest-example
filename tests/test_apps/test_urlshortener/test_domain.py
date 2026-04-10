@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -13,7 +13,7 @@ def _make_entity(**kwargs: object) -> ShortLinkEntity:
         'uid': uuid.uuid4(),
         'original_url': 'https://example.com',
         'short_code': 'abc123',
-        'created_at': datetime.now(tz=timezone.utc),
+        'created_at': datetime.now(tz=UTC),
     }
     defaults.update(kwargs)
     return ShortLinkEntity(**defaults)  # type: ignore[arg-type]

@@ -39,7 +39,8 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in {'true', '1', 'yes'}
 ALLOWED_HOSTS: list[str] = [
     host.strip()
     for host in os.environ.get(
-        'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]'
+        'DJANGO_ALLOWED_HOSTS',
+        'localhost,127.0.0.1,[::1]',
     ).split(',')
     if host.strip()
 ]

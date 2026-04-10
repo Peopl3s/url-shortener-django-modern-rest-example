@@ -14,6 +14,7 @@ from apps.urlshortener.infrastructure.repositories import (
 # Check normal DI here:
 # https://github.com/wemake-services/wemake-django-template/blob/master/%7B%7Bcookiecutter.project_name%7D%7D/server/common/di.py
 
+
 def get_base64_ascii_shortlink_generator() -> ShortLinkGeneratorService:
     """Build a ShortLinkGeneratorService with ASCII alphabet."""
     alphabet: LiteralString = string.ascii_letters + string.digits

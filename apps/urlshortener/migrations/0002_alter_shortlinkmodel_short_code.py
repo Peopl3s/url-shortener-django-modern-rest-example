@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('urlshortener', '0001_initial'),
     ]
@@ -13,6 +12,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='shortlinkmodel',
             name='short_code',
-            field=models.CharField(max_length=8, unique=True, verbose_name='short url code'),
+            field=models.CharField(
+                max_length=8,
+                unique=True,
+                verbose_name='short url code',
+            ),
         ),
     ]

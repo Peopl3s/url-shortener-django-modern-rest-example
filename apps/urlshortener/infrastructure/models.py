@@ -3,7 +3,10 @@ from typing import override
 
 from django.db import models
 
-from apps.urlshortener.domain.constants import MAX_ORIGINAL_URL_LENGTH, SHORT_CODE_LENGTH
+from apps.urlshortener.domain.constants import (
+    MAX_ORIGINAL_URL_LENGTH,
+    SHORT_CODE_LENGTH,
+)
 
 
 class ShortLinkModel(models.Model):
@@ -14,7 +17,11 @@ class ShortLinkModel(models.Model):
         verbose_name='original URL',
         max_length=MAX_ORIGINAL_URL_LENGTH,
     )
-    short_code = models.CharField(verbose_name='short url code', max_length=SHORT_CODE_LENGTH, unique=True)
+    short_code = models.CharField(
+        verbose_name='short url code',
+        max_length=SHORT_CODE_LENGTH,
+        unique=True,
+    )
     created_at = models.DateTimeField(
         verbose_name='created date',
         auto_now_add=True,

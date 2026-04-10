@@ -22,7 +22,10 @@ class ShortLinkMapper:
             clicks=obj_model.clicks,
         )
 
-    def to_model(self, entity: ShortLinkEntity) -> ShortLinkModel:  # pragma: no cover
+    def to_model(
+        self,
+        entity: ShortLinkEntity,
+    ) -> ShortLinkModel:  # pragma: no cover
         """Convert domain entity to ORM model."""
         return ShortLinkModel(
             uid=entity.uid,
