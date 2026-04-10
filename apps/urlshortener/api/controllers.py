@@ -14,7 +14,10 @@ from apps.urlshortener.api.schemas import (
     ShortLinkPath,
     ShortLinkResponseSchema,
 )
-from apps.urlshortener.domain.exceptions import ShortLinkNotFoundError
+from apps.urlshortener.domain.exceptions import (
+    ShortCodeCollisionError,
+    ShortLinkNotFoundError,
+)
 from apps.urlshortener.factories import (
     get_create_short_link_use_case,
     get_follow_short_link_use_case,
@@ -32,6 +35,10 @@ class ShortLinkController(Controller[PydanticSerializer]):
             ResponseSpec(
                 Controller.error_model,
                 status_code=HTTPStatus.BAD_REQUEST,
+            ),
+            ResponseSpec(
+                Controller.error_model,
+                status_code=HTTPStatus.CONFLICT,
             ),
         ],
     )
@@ -58,6 +65,14 @@ class ShortLinkController(Controller[PydanticSerializer]):
                     error_type=ErrorType.value_error,
                 ),
                 status_code=HTTPStatus.BAD_REQUEST,
+            )
+        if isinstance(exc, ShortCodeCollisionError):
+            return self.to_error(
+                self.format_error(
+                    'Failed to generate a unique short code, please retry',
+                    error_type=ErrorType.value_error,
+                ),
+                status_code=HTTPStatus.CONFLICT,
             )
         return super().handle_error(  # pragma: no cover
             endpoint,

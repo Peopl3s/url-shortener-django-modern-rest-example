@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import final, override
 
+from django.db import IntegrityError
 from django.db.models import F
 
+from apps.urlshortener.domain.exceptions import ShortCodeCollisionError
 from apps.urlshortener.domain.interfaces import ShortLinkRepositoryProtocol
 from apps.urlshortener.domain.models import ShortLinkEntity
 from apps.urlshortener.infrastructure.mappers import ShortLinkMapper
@@ -17,10 +19,13 @@ class ShortLinkDjangoRepository(ShortLinkRepositoryProtocol):
     @override
     def create(self, *, original_url: str, short_code: str) -> ShortLinkEntity:
         """Create and persist a new short link."""
-        obj = ShortLinkModel.objects.create(
-            original_url=original_url,
-            short_code=short_code,
-        )
+        try:
+            obj = ShortLinkModel.objects.create(
+                original_url=original_url,
+                short_code=short_code,
+            )
+        except IntegrityError as exc:
+            raise ShortCodeCollisionError(short_code) from exc
         return ShortLinkMapper()(obj_model=obj)
 
     @override

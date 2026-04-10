@@ -1,9 +1,16 @@
+import contextlib
 import uuid
 from dataclasses import dataclass
 from typing import LiteralString, final, override
 
-from apps.urlshortener.domain.constants import SHORT_CODE_LENGTH
-from apps.urlshortener.domain.exceptions import ShortLinkNotFoundError
+from apps.urlshortener.domain.constants import (
+    SHORT_CODE_LENGTH,
+    SHORT_CODE_MAX_RETRIES,
+)
+from apps.urlshortener.domain.exceptions import (
+    ShortCodeCollisionError,
+    ShortLinkNotFoundError,
+)
 from apps.urlshortener.domain.interfaces import (
     EncoderProtocol,
     LinkGeneratorProtocol,
@@ -58,10 +65,15 @@ class CreateShortLinkUseCase:
 
     def __call__(self, *, original_url: str) -> ShortLinkEntity:
         """Create and persist a short link for the given URL."""
-        code = self.generator(length=SHORT_CODE_LENGTH)
+        for _ in range(SHORT_CODE_MAX_RETRIES - 1):
+            with contextlib.suppress(ShortCodeCollisionError):
+                return self.repository.create(
+                    original_url=original_url,
+                    short_code=self.generator(length=SHORT_CODE_LENGTH),
+                )
         return self.repository.create(
             original_url=original_url,
-            short_code=code,
+            short_code=self.generator(length=SHORT_CODE_LENGTH),
         )
 
 
