@@ -1,0 +1,35 @@
+# Development overrides — applied automatically by `docker compose up`.
+#
+# This file is intentionally tracked in git.
+# Keep real secrets out of it; use a local .env for anything sensitive.
+
+services:
+  web:
+    build:
+      args:
+        INSTALL_DEV: "true"  # include pytest, ruff, mypy and other dev groups
+    # Replace gunicorn with Django's auto-reloading development server
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      # Bind-mount source so edits are reflected without rebuilding the image
+      - .:/app
+      # Named volume preserves the venv installed in the image.
+      # Without this, the bind-mount above would shadow /app/.venv and
+      # the container would lose access to its Python dependencies.
+      - dev_venv:/app/.venv
+      # Separate dev database — keeps dev data isolated from production volume
+      - db_data_dev:/data
+    environment:
+      DJANGO_SECRET_KEY: "dev-insecure-do-not-use-in-production"
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+    # Disable health-check in dev — dev server starts fast, no need for
+    # container orchestration readiness probes locally
+    healthcheck:
+      disable: true
+
+volumes:
+  dev_venv:
+  db_data_dev:

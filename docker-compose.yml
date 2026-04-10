@@ -1,0 +1,51 @@
+# Production Compose file.
+#
+# Required environment variable (set in shell or .env file):
+#   DJANGO_SECRET_KEY  — cryptographically strong secret, e.g.:
+#                        python -c "import secrets; print(secrets.token_urlsafe(50))"
+#
+# Optional:
+#   DJANGO_ALLOWED_HOSTS — comma-separated hostnames (default: localhost,127.0.0.1)
+#   GUNICORN_WORKERS     — number of gunicorn workers (default: 2)
+
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+    image: drm-example:latest
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             exec gunicorn config.wsgi:application
+               --bind 0.0.0.0:8000
+               --workers ${GUNICORN_WORKERS:-2}
+               --worker-class sync
+               --timeout 30
+               --access-logfile -
+               --error-logfile -"
+    ports:
+      - "8000:8000"
+    volumes:
+      - db_data:/data          # persist the SQLite database across restarts
+    environment:
+      # :? syntax aborts docker compose if the variable is unset or empty
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in .env or the environment}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_DEBUG: "false"
+      DJANGO_DB_PATH: /data/db.sqlite3
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --spider
+        - --tries=1
+        - http://localhost:8000/docs/openapi.json/
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s        # allow time for migrations on first boot
+
+volumes:
+  db_data:

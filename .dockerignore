@@ -1,0 +1,51 @@
+# Version control
+.git/
+.gitignore
+
+# Python bytecode and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environment (recreated inside the image via uv)
+.venv/
+venv/
+
+# Development database — the container uses a volume at /data instead
+*.sqlite3
+*.db
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.hypothesis/
+
+# Linter / type-checker caches
+.mypy_cache/
+.ruff_cache/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Secrets — never bake these into the image
+.env
+.env.*
+!.env.example
+
+# Docker meta-files (not needed inside the image)
+docker-compose*.yml
+Dockerfile*
+
+# Documentation and assets (not needed at runtime)
+docs/
+*.md
+img.png
