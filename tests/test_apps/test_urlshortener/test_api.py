@@ -7,7 +7,9 @@ from dmr.test import DMRClient
 from apps.urlshortener.api.schemas import ShortLinkResponseSchema
 from apps.urlshortener.domain.exceptions import ShortCodeCollisionError
 from apps.urlshortener.infrastructure.models import ShortLinkModel
-from apps.urlshortener.infrastructure.repositories import ShortLinkDjangoRepository
+from apps.urlshortener.infrastructure.repositories import (
+    ShortLinkDjangoRepository,
+)
 
 
 @pytest.fixture
@@ -105,6 +107,7 @@ def test_create_short_link_collision_returns_409(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Ensures that a ShortCodeCollisionError from the use case returns 409."""
+
     def _failing_usecase(*, original_url: str) -> None:
         raise ShortCodeCollisionError('abc12345')
 
@@ -121,8 +124,11 @@ def test_create_short_link_collision_returns_409(
 
 @pytest.mark.django_db
 def test_repository_create_raises_on_duplicate_short_code() -> None:
-    """ShortLinkDjangoRepository.create should raise ShortCodeCollisionError on IntegrityError."""
-    ShortLinkModel.objects.create(original_url='https://a.com', short_code='dup001x')
+    """Create should raise ShortCodeCollisionError on IntegrityError."""
+    ShortLinkModel.objects.create(
+        original_url='https://a.com',
+        short_code='dup001x',
+    )
     repo = ShortLinkDjangoRepository()
     with pytest.raises(ShortCodeCollisionError):
         repo.create(original_url='https://b.com', short_code='dup001x')
