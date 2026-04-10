@@ -43,7 +43,7 @@ class RedirectController(Controller[PydanticSerializer]):
 
     description = 'Redirect Controller'
 
-    @modify(  # type: ignore[deprecated]
+    @modify(
         extra_responses=[
             ResponseSpec(
                 Controller.error_model,

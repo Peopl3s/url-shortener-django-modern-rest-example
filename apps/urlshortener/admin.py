@@ -60,7 +60,9 @@ class ShortLinkAdmin(admin.ModelAdmin[ShortLinkModel]):
         domain = getattr(settings, 'SHORTENER_DOMAIN', 'http://127.0.0.1:8000')
         url = f'{domain.rstrip("/")}/api/shortener/{obj.short_code}/'
         return format_html(
-            '<a href="{}" target="_blank">{}</a>', url, obj.short_code,
+            '<a href="{}" target="_blank">{}</a>',
+            url,
+            obj.short_code,
         )
 
     @admin.display(description='Original URL')
