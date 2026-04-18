@@ -10,12 +10,10 @@ class ShortLinkCreateSchema(pydantic.BaseModel):
     """Schema for creating a new short link."""
 
     original_url: str = pydantic.Field(
-        json_schema_extra={
-            'minLength': 1,
-            'maxLength': MAX_ORIGINAL_URL_LENGTH,
-            'pattern': '^https?://',
-            'example': 'https://github.com/wemake-services/wemake-django-template',
-        },
+        min_length=1,
+        max_length=MAX_ORIGINAL_URL_LENGTH,
+        pattern='^https?://',
+        examples=['https://github.com/wemake-services/wemake-django-template'],
     )
 
 
