@@ -6,7 +6,7 @@ from dmr import APIRedirectError, Body, Controller, HeaderSpec, Path, modify
 from dmr.endpoint import Endpoint
 from dmr.errors import ErrorType
 from dmr.metadata import ResponseSpec
-from dmr.plugins.pydantic import PydanticSerializer
+from dmr.plugins.pydantic import PydanticFastSerializer
 
 from apps.urlshortener.api.mappers import ShortLinkDtoMapper
 from apps.urlshortener.api.schemas import (
@@ -25,7 +25,7 @@ from apps.urlshortener.factories import (
 
 
 @final
-class ShortLinkController(Controller[PydanticSerializer]):
+class ShortLinkController(Controller[PydanticFastSerializer]):
     """Controller for creating short links."""
 
     description = 'Short Link Controller'
@@ -55,7 +55,7 @@ class ShortLinkController(Controller[PydanticSerializer]):
     def handle_error(
         self,
         endpoint: Endpoint,
-        controller: Controller[PydanticSerializer],
+        controller: Controller[PydanticFastSerializer],
         exc: Exception,
     ) -> HttpResponse:
         if isinstance(exc, ValueError):
@@ -82,7 +82,7 @@ class ShortLinkController(Controller[PydanticSerializer]):
 
 
 @final
-class RedirectController(Controller[PydanticSerializer]):
+class RedirectController(Controller[PydanticFastSerializer]):
     """Controller for redirecting short links to original URLs."""
 
     description = 'Redirect Controller'
@@ -115,7 +115,7 @@ class RedirectController(Controller[PydanticSerializer]):
     def handle_error(
         self,
         endpoint: Endpoint,
-        controller: Controller[PydanticSerializer],
+        controller: Controller[PydanticFastSerializer],
         exc: Exception,
     ) -> HttpResponse:
         if isinstance(exc, ShortLinkNotFoundError):
